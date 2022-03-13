@@ -1,6 +1,9 @@
-cdgcsd
-sdnksdnlsd4sdnsd
-s;dnlknsdl
-sdnksdnl
-sdksdvs
-ksnd
+$ git init
+$ git add .
+$ git status
+$ git commit -m "initial commit"
+$ git status
+$ git remote add origin https://github.com/sam7244/git1234.git
+$ git remote
+$ git remote -v
+$ git push origin master
