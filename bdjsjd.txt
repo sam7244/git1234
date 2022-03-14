@@ -8,7 +8,7 @@ $ git remote
 $ git remote -v
 $ git push origin master
 
-System.setProperty("jar file link here");
+System.setProperty("webdriver.chrome.driver","jar file link here");
 WebDriver driver = new ChromeDriver();
 driver.get("https://www.selenium.dev");
 System.out.println(driver.getTitle());
