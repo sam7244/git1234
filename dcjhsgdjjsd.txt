@@ -1,23 +1,237 @@
-csdjlsd
-sdbsdvs
-dbsdv
-ds;sdl
-sdlsd
-sdvn;lsdnv
-sdnsldnvsld
-vs;dvs
-dv
-sd;vnsd
-vm;sdv
-dsnsd;v
-sdvm;smdv
-sdmv;msdv
-sdmv;msdlv
-msd;vm
-sdmv'sdv
-'sdvm
-ds;vn;adv's
-d
-s;dbvsdkv
-'sdbv;sd
-v'sdnv;jsd
+ 6a
+ #Write s a shell script to find a file/s that matches a pattern given as command line argument in
+#the home directory, display the contents of the file and copy the file into the directory ~/mydir. 
+
+echo "Enter the file name"
+read file
+if [ -z $file ]
+then
+echo "no arguments passed"
+elif [  ! -f $file ]
+then
+echo "file does not exist"
+else
+ls $file
+cat $file
+cp -f $file /home/shamith/Desktop/lab/HomeDir
+fi
+
+
+6b
+ #6b. Write a shell script to list all the files in a directory whose filename is at least 10 characters. (Use
+#expr command to check the length).
+if [ $# -eq 0 ]
+then 
+echo "enter directory name as argument"
+else
+c=`ls  $*`
+echo "filename are\n$c"
+for i in $c
+do
+len=`expr length $i`
+if [ $len -gt 10 ]
+then
+echo "$i having $len"
+fi
+done 
+fi
+
+
+7a
+ #7a. Write a shell script that gets executed and displays the message either “Good Morning” or “Good
+#Afternoon” or “Good Evening” depending upon time at which the user logs in. 
+
+#!/bin/bash
+t=`date +%R | cut -c 1-2`   
+if [ $t -gt 0 -a $t -le 12 ]
+then
+echo "Good Morning "
+elif [ $t -gt 12 -a $t -le 14 ]
+then
+echo "Good Aternoon "
+elif [ $t -gt 14 -a $t -le 18 ]
+then
+echo "Good Evening "
+else
+echo "Good Night"
+fi
+
+
+7b
+ #7b. Write a shell script that accepts a list of filenames as its argument, count and report occurrence
+#of each word that is present in the first argument file on other argument files
+
+if [ $# -ne 2 ]
+then
+echo "Error :invalid no of arguments "
+exit
+fi
+str=`cat $1 | tr '\n' ' '`
+for a in $str
+do
+echo "word=$a , count=`grep -c "$a" $2` "
+done
+
+
+8a
+echo "Enter Login name of the user"
+read name
+userinfo=`who | grep -w "$name"`
+if [ $? -ne 0 ]
+then
+echo "$name is not Logged in"
+ exit
+fi
+loginhours=`echo "$userinfo" | tr -s " " | cut -c 24-25`
+loginminuts=`echo "$userinfo" | tr -s " " | cut -c 27-28`
+minnow=`date +%M`
+hournow=`date +%H`
+th=`expr $hournow - $loginhours`
+tm=`expr $minnow - $loginminuts`
+echo "$name is working since $th Hrs -$tm Minutes"
+
+
+8b
+echo -n "enter the login name of the user".
+read lname
+period=0
+echo -n "enter the unit of time(min):"
+read min
+until who | grep -w "$lname"> /dev/null
+do
+sleep 10
+period=`expr $period + 1`
+if [ $period -gt $min ]
+then
+echo "$lname has not logged in since $min minutes."
+exit
+fi
+done
+echo "$lname has now logged in."
+
+
+9a
+#!/bin/sh
+echo "Enter file name"
+read file
+echo "Enter starting line"
+read a
+echo "Enter ending line"
+read b
+if [ -z $file ] || [ -z $a ] || [ -z $b ]
+then
+echo "no arguments"
+elif [ ! -f $file ]
+then
+echo "File does not exist"
+elif [ $a -eq 0 ]|| [ $b -eq 0 ] || [ $a -gt $b ]
+then
+echo "Invalid input"
+else
+sed -n "$a,$b p" $file
+fi
+
+
+9b
+echo "Enter the filename: \c" 
+read fn
+for ln in `cat $fn`
+do 
+len=`echo $ln | wc -c`
+len=`expr $len - 1`
+s=1 
+e=40 
+if [ $len -gt 40 ] 
+then 
+while [ $len -gt 40 ]
+do
+echo "`echo $ln | cut -c $s-$e` \\" 
+len=`expr $len - 40` 
+done
+else
+echo $ln
+fi
+done
+
+
+10a
+awk '{ split ($0, arr, "-")
+if ((arr[2] < 1) || (arr[2] > 12) || (arr[1] < 1) || (arr[1] > 31))
+ {
+ print "invalid date"
+ exit o
+ }
+ else
+ {
+ if (arr[2] == 1)
+ print "jan"
+ if (arr[2] == 2)
+ print "feb"
+ if (arr[2] == 3)
+ print "march"
+ if (arr[2] == 4)
+ print "apirl"
+if (arr[2] == 5)
+ print "may"
+ if (arr[2] == 6)
+ print "jun"
+ if (arr[2] == 7)
+ print "july"
+ if (arr[2] == 8)
+ print "aug"
+ if (arr[2] == 9)
+ print "sept"
+ if (arr[2] == 10)
+ print "oct"
+ if (arr[2] == 11)
+ print "nov"
+ if (arr[2] == 12)
+ print "dec"
+print arr[1]
+print arr[3]
+}
+}'
+
+
+#!/bin/bash
+echo "enter the file name"
+read file
+if [ -z $file ]
+then 
+echo "Enter the valid file name "
+else
+awk '! visited[$0]++' $file
+fi
+[11:15 pm, 15/03/2022] Shamith: 10b
+[11:15 pm, 15/03/2022] Shamith: 11a
+[11:15 pm, 15/03/2022] Shamith: BEGIN {print "TOTAL NUMBER OF BOOOKS SOLD IN EACH CATAGORY"} 
+{ books [ $1 ] +=$2 } 
+END { for(item in books)
+{ printf("\t%-17s %1s %-5d\n", item, "=",books[item])
+total+=books[item]
+}
+printf("%-17s %1s %-5s\n", "total books sold","=", total)
+}
+
+
+
+11b
+BEGIN { FS=":"
+ print "\n\t\tsalary statement of employees for the month of feb"
+ print "sl.no","\t","name","\t\t","designation","\t","BASIC",
+ "\t","DA","\t","HRA","\t","GROSS"
+ print}
+ { slno++; basic_tot+=$5;
+  if($5>=10000)
+{da=0.45*$5;da_tot+=da;
+hra=0.15*$5;hra_tot+=hra;}
+else { da=0.50*$5;da_tot+=da;
+hra=0.20*$5;hra_tot+=hra;}
+sal_tot+=$5 + da +hra
+printf "%2d\t%-15s %-12s %8d %8.2f %8.2f %8.2f\n",slno,$2,$3,$5,da,hra,$5+da+hra}
+ END {print"\n\t basic salary paid is rs" basic_tot
+ print"\n\t total da paid in rs" da_tot
+ print"\n\t total hra paid is" hra_tot
+ print"\n\t total salary paid" sal_tot 
+
+}
