@@ -192,7 +192,7 @@ print arr[3]
 }
 }'
 
-
+10b
 #!/bin/bash
 echo "enter the file name"
 read file
@@ -202,9 +202,11 @@ echo "Enter the valid file name "
 else
 awk '! visited[$0]++' $file
 fi
-[11:15 pm, 15/03/2022] Shamith: 10b
-[11:15 pm, 15/03/2022] Shamith: 11a
-[11:15 pm, 15/03/2022] Shamith: BEGIN {print "TOTAL NUMBER OF BOOOKS SOLD IN EACH CATAGORY"} 
+
+
+
+11a
+BEGIN {print "TOTAL NUMBER OF BOOOKS SOLD IN EACH CATAGORY"} 
 { books [ $1 ] +=$2 } 
 END { for(item in books)
 { printf("\t%-17s %1s %-5d\n", item, "=",books[item])
