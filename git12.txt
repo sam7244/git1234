@@ -79,6 +79,57 @@ s_final, g_final = learn(concepts, target)
 print("Final Specific_h: ", s_final, sep="\n")
 print("Final General_h: ", g_final, sep="\n")
 
+_________________
+candi 2
+
+
+import numpy as np 
+import pandas as pd
+
+data = pd.read_csv('D:/happysport.csv')
+concepts = np.array(data.iloc[:,0:-1])
+print("\nInstances are:\n",concepts)
+target = np.array(data.iloc[:,-1])
+print("\nTarget Values are: ",target)
+
+def learn(concepts, target): 
+    specific_h = concepts[0].copy()
+    print("\nInitialization of specific_h and genearal_h")
+    print("\nSpecific Boundary: ", specific_h)
+    general_h = [["?" for i in range(len(specific_h))] for i in range(len(specific_h))]
+    print("\nGeneric Boundary: ",general_h)  
+
+    for i, h in enumerate(concepts):
+        print("\nInstance", i+1 , "is ", h)
+        if target[i] == "Yes":
+            print("Instance is Positive ")
+            for x in range(len(specific_h)): 
+                if h[x]!= specific_h[x]:                    
+                    specific_h[x] ='?'                     
+                    general_h[x][x] ='?'
+                   
+        if target[i] == "No":            
+            print("Instance is Negative ")
+            for x in range(len(specific_h)): 
+                if h[x]!= specific_h[x]:                    
+                    general_h[x][x] = specific_h[x]                
+                else:                    
+                    general_h[x][x] = '?'        
+        
+        print("Specific Bundary after ", i+1, "Instance is ", specific_h)         
+        print("Generic Boundary after ", i+1, "Instance is ", general_h)
+        print("\n")
+
+    indices = [i for i, val in enumerate(general_h) if val == ['?', '?', '?', '?', '?', '?']]    
+    for i in indices:   
+        general_h.remove(['?', '?', '?', '?', '?', '?']) 
+    return specific_h, general_h 
+
+s_final, g_final = learn(concepts, target)
+
+print("Final Specific_h: ", s_final, sep="\n")
+print("Final General_h: ", g_final, sep="\n")
+
 
 
 
@@ -342,3 +393,57 @@ for r in range(len(x_test)):
     print(" Sample:", str(x_test[r]), " Actual-label:", str(y_test[r]), " Predicted-label:", str(y_pred[r])) 
 print("Classification Accuracy :" , classifier.score(x_test,y_test)); 
 
+
+
+
+
+
+
+
+text Documet classifier
+
+import pandas as pd
+msg=pd.read_csv('D:/data6.csv',names=['message','label'])
+print('Total instance in the dataset:',msg.shape[0])
+
+msg['labelnum']=msg.label.map({'pos':1,'neg':0})
+X=msg.message
+Y=msg.labelnum
+
+print("\n The message and its label of first 5 instance are listed below")
+X5,Y5 =X[0:5],msg.label[0:5]
+for x,y in zip(X5,Y5):
+    print(x,',',y)
+    
+    from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(X,Y)
+print("\n Dataset is split into training and testing samples")
+print("Total training instances:",x_train.shape[0])
+print("Total testing instances:",y_train.shape[0])
+
+from sklearn.feature_extraction.text import CountVectorizer
+count_vect=CountVectorizer()
+x_train_dtm=count_vect.fit_transform(x_train)
+x_test_dtm=count_vect.transform(x_test)
+print("\n Total features extracted using CountVectorizer:",x_train_dtm.shape[1])
+
+print("\n Features for first 5 training instance are listed below")
+df=pd.DataFrame(x_train_dtm.toarray(),columns=count_vect.get_feature_names())
+print(df[0:5])
+
+from sklearn.naive_bayes import MultinomialNB
+clf=MultinomialNB().fit(x_train_dtm,y_train)
+predicted=clf.predict(x_test_dtm)
+
+print("\n Classification results of testing samples are given below")
+for doc, p in zip(x_test,predicted):
+    pred='pos' if p==1 else 'neg'
+    print('%s --> %s'%(doc,pred))
+    
+    from sklearn import metrics
+print("\n Accuracy mertics")
+print('Accuracy of the classifier is',metrics.accuracy_score(y_test,predicted))
+
+print('Recall :',metrics.recall_score(y_test,predicted),'\nPrecision :',metrics.precision_score(y_test,predicted))
+print('Confusion Matrix')
+print(metrics.confusion_matrix(y_test,predicted))
