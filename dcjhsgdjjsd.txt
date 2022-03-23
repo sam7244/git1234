@@ -1,7 +1,299 @@
- 6a
- #Write s a shell script to find a file/s that matches a pattern given as command line argument in
-#the home directory, display the contents of the file and copy the file into the directory ~/mydir. 
+PROGRAM 1.1
+1a.Write a shell script that takes a valid directory name as an argument recursively descend all the sub-directors, find the maximum length of any file in that hierarchy, and write the maximum value to the standard output.
+AIM 
+Script to take a valid directory name as an argument recursively descend all the sub-directors, find the maximum length of any file in that hierarchy, and write the maximum value to the standard output.
+SOURCE CODE
+#!/bin/sh	
+for i in $*
+do
+if [ -d $i ]
+then
+echo " large file size is "
+else
+echo " not a directory "
+fi
+done
+echo `ls -Rl $1 | grep "^-" | tr -s ' ' | cut -d ' ' -f 5,9 | sort -n |
+tail -1`
+OUTPUT
 
+
+
+PROGRAM 1.2
+1b.Write a shell script that accepts a path name and creates all the components in that path name as directories. For example, if the script is named as mpc, then the command mpc a/b/c/d should create subdirectories a, a/b, a/b/c, a/b/c/d.
+AIM
+Shell script to accepts a path name and creates all the components in that path name as directories. For example, if the script is named as mpc, then the command mpc a/b/c/d should create subdirectories a, a/b, a/b/c, a/b/c/d.
+SOURCE CODE
+#!/bin/bash
+echo " enter the pathname"
+read p
+i=1
+j=1
+len=`
+echo $p | wc -c`
+while [ $i -le $len ]
+do
+x=`echo $p | cut -d ' ' -f $j`
+namelength=`echo $x | wc -c`
+mkdir -p $x
+cd $x
+pwd
+j=`expr $j + 1`
+i=`expr $i + $namelength`
+done
+
+
+
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 2.1
+2a.Write a shell script that accepts two filenames as arguments, checks if the permissions for these files are identical and if the permissions are identical, output common permissions otherwise output each filename followed by its permissions.  
+AIM
+Shell script to accepts two filenames as arguments, checks if the permissions for these files are identical and if the permissions are identical, output common permissions otherwise output each filename followed by its permissions.
+SOURCE CODE  
+#!/bin/sh
+echo "Enter file name 1 :$1"
+echo "Enter file name 2 :$2"
+if [ $# -eq 0 ]
+then
+echo "no arguments passed"
+elif [ ! -e $1 -o ! -e $2 ]
+then
+echo "file does not exist"
+else
+x=`ls -l $1 | cut -c 1-10`
+y=`ls -l $2 | cut -c 1-10`
+if [ $x = $y ]
+then
+echo "permissions are same : $x"
+else
+echo "permissions are different"
+echo "permission of $1 is $x"
+echo "permission of $2 is $y"
+fi
+fi
+
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 2.2
+2b.Write a shell script which accepts valid log-in names as arguments and prints their corresponding home directories, if no arguments are specified, print a suitable error message.
+AIM
+Shell script to accepts valid log-in names as arguments and prints their corresponding home directories, if no arguments are specified, print a suitable error message.
+SOURCE CODE
+#!/bin/sh
+echo "enter arguments : $1";
+if [ $# -eq 0 ]
+then
+echo "No command line argument passed"
+exit
+fi
+while [ $1 ]
+do
+cat /etc/passwd | cut -d ":" -f1 | grep "^$1" > temp
+a=`cat temp`
+if [ "$a" != "$1" ]
+then
+echo "ERROR:$1 is an invalid login name"
+else
+echo "Home Directory for $1 is"
+echo `cat /etc/passwd | grep "^$1" | cut -d ":" -f6`
+fi
+shift
+done
+
+
+
+
+OUTPUT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 3.1
+3a.Create a script file called file properties that reads a filename entered and outputs its properties. 
+AIM
+Shell script to reads a filename entered and outputs its properties. 
+SOURCE CODE
+#!/bin/bash 
+echo "enter the file name"
+read file
+if [ -f $file ]
+then
+set -- `ls -l $file`
+echo "file permission $1"
+echo "number of links $2"
+echo "user name $3"
+echo "group name $4"
+echo "file size $5 bytes"
+echo "date of modification $6 $7"
+echo "time of modification $8"
+echo "name of file $9"
+else
+echo "file doesnot exit"
+fi
+ls -l $file
+
+
+
+
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 3.2
+3b.Write a shell script to implement terminal locking (Similar to the lock command). It should prompt for the user for a password. After accepting the password entered by the user, it must prompt again for the matching password as confirmation and if match occurs, it must lock the keyword until a matching password is entered again by the user.
+AIM
+Shell script to implement terminal locking (Similar to the lock command). It should prompt for the user for a password. After accepting the password entered by the user, it must prompt again for the matching password as confirmation and if match occurs, it must lock the keyword until a matching password is entered again by the user.
+SOURCE CODE
+#!/bin/bash
+stty -echo
+clear
+echo "Enter the password"
+read pass1
+echo "Re-Enter the password"
+read pass2
+val=1
+while [ $val -eq 1 ]
+do
+if [ $pass1 = $pass2 ]
+then
+val=0
+echo "Terminal locked"
+echo "To unlock enter the password"
+pass1=""
+until [ "$pass1" = "$pass2" ]
+do
+read pass1
+echo "Terminal locked
+done
+echo "Terminal unlocked"
+stty echo 
+else
+echo "Password mismatch please re-type it"
+stty -echo
+read pass2
+
+fi
+done
+
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 4.1
+4a.Write a shell script that accept one or more file names as argument and convert all of them to uppercase, provided they exists in current directory.  
+AIM
+Shell script to accept one or more file names as argument and convert all of them to uppercase, provided they exists in current directory.  
+SOURCE CODE
+#!/bin/bash
 echo "Enter the file name"
 read file
 if [ -z $file ]
@@ -11,25 +303,227 @@ elif [  ! -f $file ]
 then
 echo "file does not exist"
 else
-ls $file
-cat $file
-cp -f $file /home/shamith/Desktop/lab/HomeDir
+tr '[a-z]' '[A-Z]' < $file
 fi
 
 
-6b
- #6b. Write a shell script to list all the files in a directory whose filename is at least 10 characters. (Use
-#expr command to check the length).
+
+
+
+
+
+
+
+
+OUTPUT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 4.2
+4b.Write a shell script that displays all the links to a file specified as the first argument to the script. The second argument, which is optional, can be used to specify in which the search is to begin. If this second argument is not present, the search is to begin in the current working directory. In either case, the starting directory as well as its subdirectories at all levels must be searched. The script need not include error checking.
+AIM
+Shell script to displays all the links to a file specified as the first argument to the script. The second argument, which is optional, can be used to specify in which the search is to begin. If this second argument is not present, the search is to begin in the current working directory. In either case, the starting directory as well as its subdirectories at all levels must be searched. The script need not include error checking.
+SOURCE CODE
+#!/bin/sh
+echo "Name the file"
+read file
+echo "name the directory"
+read directory
+if [ ! -z $directory ] then
+cwd=`pwd`
+cd $directory
+link=`ls -l $file | tr -s "" | cut -d " " -f2`
+cd $cwd
+ else
+ link=`ls -l $file | tr -s "" | cut -d " " -f2`
+ fi
+ echo "Number of links of file $file, $link"
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 5.1
+5a.Write a shell script that accepts filename as argument and display its creation time if file exist and if does not send output error message.
+AIM
+Shell script to accepts filename as argument and display its creation time if file exist and if does not send output error message.
+SOURCE CODE
+#!/bin/bash
+echo "Enter the file name"
+read file
+if [ -z $file ]
+then
+echo "no arguments passed"
+elif [  ! -f $file ]
+then
+echo "file does not exist"
+else
+f=`ls -l $file | cut -d  " " -f8`
+echo "file creation time :" $f
+fi
+
+
+
+
+
+
+
+
+
+
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 5.2
+5b.Write a shell script to display the calendar for the current month with current date replaced by * or ** depending whether the date is one digit or two digit.
+AIM
+Shell script to display the calendar for the current month with current date replaced by * or ** depending whether the date is one digit or two digit.
+SOURCE CODE
+#!/bin/bash
+set `date`
+y=$2
+if [  $y -le 9 ]
+then
+date |sed "s/$2/*/"
+else
+date |sed "s/$2/**/"
+fi
+
+OUTPUT
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 6.1
+6a.Write a shell script to find a file/s that matches a pattern given as command line argument in the home directory, display the contents of the file and copy the file into the directory ~/mydir.  
+AIM
+Shell script to find a file/s that matches a pattern given as command line argument in the home directory, display the contents of the file and copy the file into the directory ~/mydir.
+SOURCE CODE
+#!/bin/sh
+echo "Enter the file name"
+read file
+if [ -z $file ]
+then
+echo "no arguments passed"
+elif [  ! -f $file ]
+then
+echo "file does not exist"
+else
+#ls $file
+cat $file
+cp -f $file /home/nishanth/Desktop/lab/mydir
+fi
+
+
+
+
+
+
+OUTPUT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 6.2
+6b.Write a shell script to list all the files in a directory whose filename is at least 10 characters. (Use expr command to check the length).
+AIM
+Shell script to list all the files in a directory whose filename is at least 10 characters. (Use expr command to check the length).
+SOURCE CODE
+#!/bin/bash
 if [ $# -eq 0 ]
 then 
-echo "enter directory name as argument"
+echo "no argument"
 else
-c=`ls  $*`
+c=`ls  $1`
 echo "filename are\n$c"
 for i in $c
 do
 len=`expr length $i`
-if [ $len -gt 10 ]
+if [ $len -ge 10 ]
 then
 echo "$i having $len"
 fi
@@ -37,12 +531,56 @@ done
 fi
 
 
-7a
- #7a. Write a shell script that gets executed and displays the message either “Good Morning” or “Good
-#Afternoon” or “Good Evening” depending upon time at which the user logs in. 
 
+
+
+OUTPUT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 7.1
+7a.Write a shell script that gets executed and displays the message either “Good Morning” or “Good Afternoon” or “Good Evening” depending upon time at which the user logs in.
+AIM
+Shell script that gets executed and displays the message either “Good Morning” or “Good Afternoon” or “Good Evening” depending upon time at which the user logs in.
+SOURCE CODE
 #!/bin/bash
-t=`date +%R | cut -c 1-2`   
+t=`date +%H`    #%H: Prints the hour.
 if [ $t -gt 0 -a $t -le 12 ]
 then
 echo "Good Morning "
@@ -57,10 +595,54 @@ echo "Good Night"
 fi
 
 
-7b
- #7b. Write a shell script that accepts a list of filenames as its argument, count and report occurrence
-#of each word that is present in the first argument file on other argument files
 
+
+
+
+
+
+OUTPUT
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 7.2
+7b.Write a shell script that accepts a list of filenames as its argument, count and report occurrence of each word that is present in the first argument file on other argument files
+AIM
+Shell script to accepts a list of filenames as its argument, count and report occurrence of each word that is present in the first argument file on other argument files
+SOURCE CODE
+#!/bin/sh
 if [ $# -ne 2 ]
 then
 echo "Error :invalid no of arguments "
@@ -72,11 +654,18 @@ do
 echo "word=$a , count=`grep -c "$a" $2` "
 done
 
+OUTPUT
 
-8a
+
+PROGRAM 8.1
+8a.Write a shell script that determine the period for which as specified user is working on a system and display appropriate message.
+AIM
+Shell script to determine the period for which as specified user is working on a system and display appropriate message
+SOURCE CODE
+#!/bin/bash
 echo "Enter Login name of the user"
 read name
-userinfo=`who | grep -w "$name"`
+userinfo=`who | grep -w "$name"` # |grep"pts"`
 if [ $? -ne 0 ]
 then
 echo "$name is not Logged in"
@@ -91,7 +680,36 @@ tm=`expr $minnow - $loginminuts`
 echo "$name is working since $th Hrs -$tm Minutes"
 
 
-8b
+
+
+
+
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 8.2
+8b.Write a shell script that reports the logging on of as specified user within one minute after he/she login. The script automatically terminates if specified user does not login during specified in period of time.
+AIM
+Shell script to reports the logging on of as specified user within one minute after he/she login. The script automatically terminates if specified user does not login during specified in period of time.
+SOURCE CODE
 echo -n "enter the login name of the user".
 read lname
 period=0
@@ -100,6 +718,7 @@ read min
 until who | grep -w "$lname"> /dev/null
 do
 sleep 10
+# (sleep command is used to create a dummy job. A dummy job helps in delaying the execution.)
 period=`expr $period + 1`
 if [ $period -gt $min ]
 then
@@ -110,7 +729,33 @@ done
 echo "$lname has now logged in."
 
 
-9a
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 9.1
+9a.Write a shell script that accepts the filename, starting and ending line number as an argument and display all the lines between the given line number.  
+AIM
+Shell script to accepts the filename, starting and ending line number as an argument and display all the lines between the given line number.  
+SOURCE CODE
 #!/bin/sh
 echo "Enter file name"
 read file
@@ -132,35 +777,91 @@ sed -n "$a,$b p" $file
 fi
 
 
-9b
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 9.2
+9b.Write a shell script that folds long lines into 40 columns. Thus any line that exceeds 40 characters must be broken after 40th, a “/” is to be appended as the indication of folding and processing is to be continued with the residue. The input is to be supplied through a text file created by the user.
+AIM
+Shell script to folds long lines into 40 columns. Thus any line that exceeds 40 characters must be broken after 40th, a “/” is to be appended The input is to be supplied through a text file created by the user.
+SOURCE CODE
 echo "Enter the filename: \c" 
 read fn
 for ln in `cat $fn`
 do 
-len=`echo $ln | wc -c`
-len=`expr $len - 1`
+lgth=`echo $ln | wc -c`
+lgth=`expr $lgth - 1`
 s=1 
 e=40 
-if [ $len -gt 40 ] 
+if [ $lgth -gt 40 ] 
 then 
-while [ $len -gt 40 ]
+while [ $lgth -gt 40 ]
 do
 echo "`echo $ln | cut -c $s-$e` \\" 
-len=`expr $len - 40` 
+lgth=`expr $lgth - 40` 
 done
 else
 echo $ln
 fi
-done
+done 
+OUTPUT
+ 
 
 
-10a
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 10.1
+10a.Write an awk script that accepts date argument in the form of dd-mm-yy and display it in the form month, day and year. The script should check the validity of the argument and in the case of error, display a suitable message.  
+AIM
+Awk script to accepts date argument in the form of dd-mm-yy and display it in the form month, day and year. The script should check the validity of the argument and in the case of error, display a suitable message.  
+SOURCE CODE
 awk '{ split ($0, arr, "-")
 if ((arr[2] < 1) || (arr[2] > 12) || (arr[1] < 1) || (arr[1] > 31))
  {
- print "invalid date"
- exit o
- }
+ print "invalid date"}
  else
  {
  if (arr[2] == 1)
@@ -189,23 +890,94 @@ if (arr[2] == 5)
  print "dec"
 print arr[1]
 print arr[3]
-}
-}'
+exit 0 } }’
+'
 
-10b
-#!/bin/bash
-echo "enter the file name"
+OUTPUT
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 10.2
+10b.Write an awk script to delete duplicated line from a text file. The order of the original lines must remain unchanged. 
+AIM
+Awk script to delete duplicated line from a text file. The order of the original lines must remain unchanged. 
+SOURCE CODE
+#!/bin/sh
+echo "Enter file name"
 read file
 if [ -z $file ]
-then 
-echo "Enter the valid file name "
+then
+echo “no arguments”
+elif [ ! -f $file ]
+then
+echo “files does not exist”
 else
-awk '! visited[$0]++' $file
+awk '!visited[$0]++' $file 
 fi
 
 
 
-11a
+
+
+
+
+
+
+
+OUTPUT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROGRAM 11.1
+11a.Write an awk script to find out total number of books sold in each discipline as well as total book sold using associate array down table as given below. Electrical-34 Mechanical-67 Electrical-80 Computer Science-43 Civil-98 Mechanical-65 Computer Science-64. DA=50% of basic
+AIM
+Awk script to find out total number of books sold in each discipline as well as total book sold using associate array down table as given below. Electrical-34 Mechanical-67 Electrical-80 Computer Science-43 Civil-98 Mechanical-65 Computer Science-64.DA=50% of basic
+SOURCE CODE
 BEGIN {print "TOTAL NUMBER OF BOOOKS SOLD IN EACH CATAGORY"} 
 { books [ $1 ] +=$2 } 
 END { for(item in books)
@@ -214,10 +986,15 @@ total+=books[item]
 }
 printf("%-17s %1s %-5s\n", "total books sold","=", total)
 }
+OUTPUT
+ 
 
 
-
-11b
+PROGRAM 11.2
+11b.Write an awk script to compute gross salary of an employee accordingly to rule given below. If basic salary < 10000 then HRA=15% of basic & DA=45% of basic. If basic salary is >=1000 then HRA=20% of basic & DA=50% of basic.
+AIM
+Awk script to compute gross salary of an employee accordingly to rule given below. If basic salary < 10000 then HRA=15% of basic & DA=45% of basic. If basic salary is >=1000 then HRA=20% of basic & DA=50% of basic.
+SOURCE CODE
 BEGIN { FS=":"
  print "\n\t\tsalary statement of employees for the month of feb"
  print "sl.no","\t","name","\t\t","designation","\t","BASIC",
@@ -235,5 +1012,9 @@ printf "%2d\t%-15s %-12s %8d %8.2f %8.2f %8.2f\n",slno,$2,$3,$5,da,hra,$5+da+hra
  print"\n\t total da paid in rs" da_tot
  print"\n\t total hra paid is" hra_tot
  print"\n\t total salary paid" sal_tot 
-
 }
+OUTPUT
+ 
+
+
+
